@@ -1,0 +1,5 @@
+pandas
+numpy
+tf_keras
+scikit-learn
+matplotlib
