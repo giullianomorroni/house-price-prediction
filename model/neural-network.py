@@ -29,7 +29,8 @@ housing['parking'] = np.log(housing['parking'])
 
 housing = housing.dropna()
 
-X = housing[['area', 'bedrooms', 'bathrooms', 'stories', 'parking', 'guestroom_ohe','basement_ohe']]
+X = housing[['area', 'bedrooms', 'bathrooms', 'stories', 'parking', 'prefarea_ohe','airconditioning_ohe']]
+
 y = housing['price']
 
 print(X.head(4))
@@ -51,7 +52,7 @@ model.compile(
     loss='mae'
 )
 
-history = model.fit(X_train, y_train, validation_data=(X_test, y_test), batch_size=32, epochs=100, verbose=False)
+history = model.fit(X_train, y_train, validation_data=(X_test, y_test), batch_size=128, epochs=200, verbose=False)
 
 history_df = pd.DataFrame(history.history)
 print("Minimum Validation Loss: {:0.4f}".format(history_df['val_loss'].min()))
@@ -67,7 +68,7 @@ plt.show()
 # # summarize model.
 # model.summary()
 
-for i in range(1,10):
+for i in range(1,20):
     features = X_test.iloc[[i]]
     real_price = y_test.iloc[[i]]
     real_price = int(np.exp(real_price.values[0]))
@@ -75,4 +76,6 @@ for i in range(1,10):
     predict_price = model.predict(features)
     predict_price = int(np.exp(predict_price[0][0]))
 
-    print('real_price / predict_price (diff)', real_price, '/' ,predict_price, '(', real_price-predict_price, ')')
+    percent = (predict_price*100)/real_price
+
+    print('real_price / predict_price (diff)', real_price, '/' ,predict_price, '(', int(percent-100), '%)')
